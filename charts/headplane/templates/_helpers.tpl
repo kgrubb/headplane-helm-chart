@@ -68,5 +68,6 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{- define "headplane.createSecret" -}}
-{{- ternary "true" "false" (and (empty .Values.secrets.existingSecret) (or .Values.secrets.cookieSecret .Values.secrets.apiKey .Values.secrets.clientSecret)) -}}
+{{- $inline := or (ne (.Values.secrets.cookieSecret | default "") "") (ne (.Values.secrets.apiKey | default "") "") (ne (.Values.secrets.clientSecret | default "") "") -}}
+{{- ternary "true" "false" (and (empty .Values.secrets.existingSecret) $inline) -}}
 {{- end -}}
