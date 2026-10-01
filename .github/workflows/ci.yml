@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: azure/setup-helm@v5
+
+      - name: Lint YAML
+        run: |
+          pipx install yamllint
+          yamllint .
+
+      - name: Shellcheck
+        run: shellcheck scripts/*.sh
+
+      - name: Lint chart
+        run: |
+          helm lint charts/headplane --strict -f ci/values.yaml
+
+      - name: Render chart
+        run: |
+          helm template test charts/headplane -f ci/values.yaml
+          helm template test charts/headplane -f ci/values.yaml --set persistence.enabled=false
+          helm template test charts/headplane -f ci/values.yaml \
+            --set ingress.enabled=true \
+            --set ingress.className=traefik \
+            --set 'ingress.hosts[0].host=headscale.example.org' \
+            --set 'ingress.hosts[0].paths[0].path=/admin' \
+            --set 'ingress.hosts[0].paths[0].pathType=Prefix' \
+            --set 'ingress.tls[0].secretName=headscale-tls' \
+            --set 'ingress.tls[0].hosts[0]=headscale.example.org'
+          helm template test charts/headplane -f ci/values.yaml \
+            --set secrets.existingSecret=headplane \
+            --set secrets.cookieSecret= \
+            --set secrets.apiKey= \
+            --set config.oidc.enabled=true \
+            --set config.oidc.issuer=https://login.example.org/application/o/headplane/ \
+            --set config.oidc.clientId=headplane \
+            --set config.oidc.defaultRole=owner \
+            --set headscaleConfig.existingConfigMap=headscale
+          helm template test charts/headplane -f ci/values.yaml \
+            --set persistence.existingClaim=my-claim \
+            --set 'resources.requests.memory=128Mi'
+
+      - name: Lint manifests
+        uses: stackrox/kube-linter-action@v1
+        with:
+          directory: charts/headplane
+          config: .kube-linter.yaml

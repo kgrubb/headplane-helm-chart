@@ -1,0 +1,10 @@
+# Chart-releaser artifacts
+.cr-release-packages/
+charts/headplane/RELEASE-NOTES.md
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*~

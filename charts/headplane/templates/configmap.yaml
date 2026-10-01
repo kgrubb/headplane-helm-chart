@@ -1,0 +1,51 @@
+{{- if and .Values.secrets.existingSecret (or .Values.secrets.cookieSecret .Values.secrets.apiKey .Values.secrets.clientSecret) }}
+{{- fail "secrets.existingSecret is mutually exclusive with inline secrets.cookieSecret/apiKey/clientSecret" }}
+{{- end }}
+{{- if and .Values.config.oidc.enabled (and (empty .Values.secrets.existingSecret) (empty .Values.secrets.clientSecret)) }}
+{{- fail "config.oidc.enabled requires secrets.existingSecret or secrets.clientSecret" }}
+{{- end }}
+{{- if and (empty .Values.secrets.existingSecret) (or (empty .Values.secrets.cookieSecret) (empty .Values.secrets.apiKey)) }}
+{{- fail "set secrets.existingSecret, or provide secrets.cookieSecret and secrets.apiKey" }}
+{{- end }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "headplane.fullname" . }}
+  labels:
+    {{- include "headplane.labels" . | nindent 4 }}
+data:
+  config.yaml: |
+    server:
+      host: {{ .Values.config.server.host | quote }}
+      port: {{ .Values.config.server.port }}
+      base_url: {{ .Values.config.server.baseUrl | quote }}
+      cookie_secret_path: "/etc/headplane/secrets/{{ .Values.secrets.cookieSecretKey }}"
+      cookie_secure: {{ .Values.config.server.cookieSecure }}
+      cookie_max_age: {{ .Values.config.server.cookieMaxAge }}
+      data_path: {{ .Values.config.server.dataPath | quote }}
+    headscale:
+      url: {{ .Values.config.headscale.url | quote }}
+      public_url: {{ .Values.config.headscale.publicUrl | quote }}
+      {{- if .Values.headscaleConfig.existingConfigMap }}
+      config_path: {{ .Values.config.headscale.configPath | quote }}
+      {{- end }}
+      api_key_path: "/etc/headplane/secrets/{{ .Values.secrets.apiKeyKey }}"
+    integration:
+      agent:
+        enabled: {{ .Values.config.integration.agent.enabled }}
+      docker:
+        enabled: {{ .Values.config.integration.docker.enabled }}
+      kubernetes:
+        enabled: {{ .Values.config.integration.kubernetes.enabled }}
+      proc:
+        enabled: {{ .Values.config.integration.proc.enabled }}
+    oidc:
+      enabled: {{ .Values.config.oidc.enabled }}
+      {{- if .Values.config.oidc.enabled }}
+      issuer: {{ .Values.config.oidc.issuer | quote }}
+      client_id: {{ .Values.config.oidc.clientId | quote }}
+      client_secret_path: "/etc/headplane/secrets/{{ .Values.secrets.clientSecretKey }}"
+      scope: {{ .Values.config.oidc.scope | quote }}
+      use_pkce: {{ .Values.config.oidc.usePkce }}
+      default_role: {{ .Values.config.oidc.defaultRole | quote }}
+      {{- end }}

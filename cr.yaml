@@ -1,0 +1,8 @@
+owner: kgrubb
+git-repo: headplane-helm-chart
+package-path: .cr-release-packages
+charts-repo: https://kgrubb.github.io/headplane-helm-chart
+pages-branch: gh-pages
+pages-index-path: index.yaml
+packages-with-index: true
+release-notes-file: RELEASE-NOTES.md

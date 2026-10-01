@@ -1,0 +1,14 @@
+# CI render fixture used by helm lint/template.
+fullnameOverride: headplane
+persistence:
+  enabled: true
+  size: 1Gi
+secrets:
+  cookieSecret: "abcdefghijklmnopqrstuvwxyz012345"
+  apiKey: "ci-only-api-key"
+config:
+  server:
+    baseUrl: https://headscale.example.org
+  headscale:
+    url: http://headscale:8080
+    publicUrl: https://headscale.example.org

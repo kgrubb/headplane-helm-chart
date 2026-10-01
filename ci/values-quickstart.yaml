@@ -1,0 +1,19 @@
+fullnameOverride: headplane
+persistence:
+  enabled: true
+  size: 1Gi
+secrets:
+  cookieSecret: "abcdefghijklmnopqrstuvwxyz012345"
+  apiKey: "replace-me"
+config:
+  server:
+    baseUrl: https://headscale.example.org
+  headscale:
+    url: http://headscale:8080
+    publicUrl: https://headscale.example.org
+resources:
+  requests:
+    cpu: 50m
+    memory: 128Mi
+  limits:
+    memory: 512Mi

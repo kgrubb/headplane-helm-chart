@@ -1,0 +1,39 @@
+apiVersion: v2
+name: headplane
+description: Helm chart for Headplane, the web UI for Headscale
+type: application
+version: 0.0.1
+appVersion: "0.7.1"
+home: https://headplane.net
+icon: https://kgrubb.github.io/headplane-helm-chart/logo.svg
+sources:
+  - https://github.com/tale/headplane
+  - https://github.com/kgrubb/headplane-helm-chart
+maintainers:
+  - name: kgrubb
+    email: 8471701+kgrubb@users.noreply.github.com
+    url: https://github.com/kgrubb
+keywords:
+  - headplane
+  - headscale
+  - tailscale
+  - vpn
+  - wireguard
+annotations:
+  artifacthub.io/category: networking
+  artifacthub.io/containsSecurityUpdates: "false"
+  artifacthub.io/license: Apache-2.0
+  artifacthub.io/images: |
+    - name: headplane
+      image: ghcr.io/tale/headplane:0.7.1
+  artifacthub.io/links: |
+    - name: support
+      url: https://github.com/kgrubb/headplane-helm-chart/issues
+    - name: source
+      url: https://github.com/kgrubb/headplane-helm-chart
+    - name: upstream
+      url: https://github.com/tale/headplane
+  artifacthub.io/prerelease: "false"
+  artifacthub.io/signKey: |
+    fingerprint: AFB495384FDAD4EDC0EBF8FECA999A73395F45FD
+    url: https://kgrubb.github.io/headplane-helm-chart/public.key

@@ -1,0 +1,128 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  pull-requests: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Bump chart version
+        id: bump
+        run: |
+          BEFORE="${{ github.event.before }}"
+          AFTER="${{ github.sha }}"
+          MSG='${{ github.event.head_commit.message }}'
+          root_commit=$(git rev-list --max-parents=0 HEAD | tail -1)
+
+          last_tag=$(git tag -l 'headplane-*' --sort=-v:refname | head -1)
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            BEFORE="${last_tag:-$root_commit}"
+            MSG=$(git log -1 --format=%s "$AFTER")
+          elif [[ "$BEFORE" == "0000000000000000000000000000000000000000" ]]; then
+            # First push to a new repo: treat the root commit as the baseline.
+            BEFORE="$root_commit"
+          fi
+
+          [[ "$MSG" =~ ^chore\(release\): ]] && exit 0
+
+          since_ref="${last_tag:-$BEFORE}"
+          charts_changed=false
+          if git diff --name-only "$since_ref" "$AFTER" -- charts/ | grep -q .; then
+            charts_changed=true
+          elif [[ -z "$last_tag" ]] && git ls-files -- 'charts/**' | grep -q .; then
+            # First release on a new repo with no prior tags.
+            charts_changed=true
+            since_ref="$root_commit"
+            BEFORE="$root_commit"
+          fi
+          [[ "$charts_changed" == "true" ]] || exit 0
+
+          echo "charts_changed=true" >> "$GITHUB_OUTPUT"
+          echo "since_ref=$since_ref" >> "$GITHUB_OUTPUT"
+
+          chmod +x scripts/{bump-chart-version,generate-changelog,sync-gh-pages}.sh
+          ./scripts/bump-chart-version.sh "$BEFORE" "$AFTER"
+          echo "version=$(awk '/^version:/ { print $2 }' charts/headplane/Chart.yaml)" >> "$GITHUB_OUTPUT"
+
+      - name: Generate changelog
+        if: steps.bump.outputs.charts_changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ./scripts/generate-changelog.sh \
+            "${{ steps.bump.outputs.since_ref }}" \
+            "${{ github.sha }}" \
+            "${{ steps.bump.outputs.version }}"
+
+      - uses: azure/setup-helm@v5
+        if: steps.bump.outputs.charts_changed == 'true'
+
+      - name: Import GPG key
+        if: steps.bump.outputs.charts_changed == 'true'
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+        run: |
+          gpg_dir="$RUNNER_TEMP/gpg"
+          mkdir -p "$gpg_dir"
+          chmod 700 "$gpg_dir"
+          export GNUPGHOME="$gpg_dir"
+          echo "GNUPGHOME=$gpg_dir" >> "$GITHUB_ENV"
+          printf '%s' "$GPG_PRIVATE_KEY" | gpg --batch --import
+          gpg --list-secret-keys --keyid-format long
+          gpg --list-secret-keys --keyid-format long | grep -q "CA999A73395F45FD"
+          gpg --export-secret-keys AFB495384FDAD4EDC0EBF8FECA999A73395F45FD > "$gpg_dir/secring.gpg"
+          test -s "$gpg_dir/secring.gpg"
+          printf '\n' > "$gpg_dir/passphrase"
+          echo "CR_KEYRING=$gpg_dir/secring.gpg" >> "$GITHUB_ENV"
+          echo "CR_PASSPHRASE_FILE=$gpg_dir/passphrase" >> "$GITHUB_ENV"
+          echo "CR_SIGN=true" >> "$GITHUB_ENV"
+          echo "CR_KEY=8471701+kgrubb@users.noreply.github.com" >> "$GITHUB_ENV"
+
+      - name: Publish charts
+        if: steps.bump.outputs.charts_changed == 'true'
+        uses: helm/chart-releaser-action@v1.7.0
+        with:
+          charts_dir: charts
+          config: cr.yaml
+          packages_with_index: true
+        env:
+          CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GNUPGHOME: ${{ env.GNUPGHOME }}
+          CR_SIGN: true
+          CR_KEY: 8471701+kgrubb@users.noreply.github.com
+          CR_KEYRING: ${{ env.CR_KEYRING }}
+          CR_PASSPHRASE_FILE: ${{ env.CR_PASSPHRASE_FILE }}
+
+      - name: Sync gh-pages assets
+        if: steps.bump.outputs.charts_changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./scripts/sync-gh-pages.sh static
+
+      - name: Commit release artifacts
+        if: steps.bump.outputs.charts_changed == 'true'
+        run: |
+          git add CHANGELOG.md
+          git diff --quiet charts/headplane/Chart.yaml || git add charts/headplane/Chart.yaml
+          git diff --staged --quiet && exit 0
+          VERSION=$(awk '/^version:/ { print $2 }' charts/headplane/Chart.yaml)
+          git commit -m "chore(release): bump chart to ${VERSION}"
+          git push

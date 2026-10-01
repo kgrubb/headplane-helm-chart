@@ -1,0 +1,19 @@
+1. Open the Headplane UI:
+
+{{- if .Values.ingress.enabled }}
+{{- range $host := .Values.ingress.hosts }}
+  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}/admin
+{{- end }}
+{{- else if eq .Values.service.type "LoadBalancer" }}
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "headplane.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo "Visit http://$SERVICE_IP:{{ .Values.service.port }}/admin"
+{{- else }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "headplane.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME {{ .Values.service.port }}:{{ .Values.config.server.port }}
+  echo "Visit http://127.0.0.1:{{ .Values.service.port }}/admin"
+{{- end }}
+
+2. Sign in with OIDC (if enabled) or paste a Headscale API key.
+
+3. Create an API key if needed:
+   kubectl -n <headscale-ns> exec deploy/headscale -- headscale apikeys create --expiration 730d
