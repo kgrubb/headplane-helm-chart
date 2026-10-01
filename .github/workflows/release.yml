@@ -37,7 +37,6 @@ jobs:
             BEFORE="${last_tag:-$root_commit}"
             MSG=$(git log -1 --format=%s "$AFTER")
           elif [[ "$BEFORE" == "0000000000000000000000000000000000000000" ]]; then
-            # First push to a new repo: treat the root commit as the baseline.
             BEFORE="$root_commit"
           fi
 
@@ -48,7 +47,6 @@ jobs:
           if git diff --name-only "$since_ref" "$AFTER" -- charts/ | grep -q .; then
             charts_changed=true
           elif [[ -z "$last_tag" ]] && git ls-files -- 'charts/**' | grep -q .; then
-            # First release on a new repo with no prior tags.
             charts_changed=true
             since_ref="$root_commit"
             BEFORE="$root_commit"
@@ -77,9 +75,15 @@ jobs:
 
       - name: Import GPG key
         if: steps.bump.outputs.charts_changed == 'true'
+        id: gpg
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
         run: |
+          if [[ -z "${GPG_PRIVATE_KEY}" ]]; then
+            echo "signed=false" >> "$GITHUB_OUTPUT"
+            echo "GPG_PRIVATE_KEY not set. Publishing unsigned charts."
+            exit 0
+          fi
           gpg_dir="$RUNNER_TEMP/gpg"
           mkdir -p "$gpg_dir"
           chmod 700 "$gpg_dir"
@@ -93,8 +97,7 @@ jobs:
           printf '\n' > "$gpg_dir/passphrase"
           echo "CR_KEYRING=$gpg_dir/secring.gpg" >> "$GITHUB_ENV"
           echo "CR_PASSPHRASE_FILE=$gpg_dir/passphrase" >> "$GITHUB_ENV"
-          echo "CR_SIGN=true" >> "$GITHUB_ENV"
-          echo "CR_KEY=8471701+kgrubb@users.noreply.github.com" >> "$GITHUB_ENV"
+          echo "signed=true" >> "$GITHUB_OUTPUT"
 
       - name: Publish charts
         if: steps.bump.outputs.charts_changed == 'true'
@@ -106,7 +109,7 @@ jobs:
         env:
           CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GNUPGHOME: ${{ env.GNUPGHOME }}
-          CR_SIGN: true
+          CR_SIGN: ${{ steps.gpg.outputs.signed }}
           CR_KEY: 8471701+kgrubb@users.noreply.github.com
           CR_KEYRING: ${{ env.CR_KEYRING }}
           CR_PASSPHRASE_FILE: ${{ env.CR_PASSPHRASE_FILE }}
