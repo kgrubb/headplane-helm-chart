@@ -37,6 +37,8 @@ data:
         enabled: {{ .Values.config.integration.docker.enabled }}
       kubernetes:
         enabled: {{ .Values.config.integration.kubernetes.enabled }}
+        validate_manifest: {{ .Values.config.integration.kubernetes.validateManifest }}
+        pod_name: {{ .Values.config.integration.kubernetes.podName | quote }}
       proc:
         enabled: {{ .Values.config.integration.proc.enabled }}
     oidc:

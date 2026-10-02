@@ -61,6 +61,9 @@ config:
       enabled: false
     kubernetes:
       enabled: false
+      # Required by Headplane schema even when disabled.
+      validateManifest: true
+      podName: "headscale"
     proc:
       enabled: false
   oidc:
