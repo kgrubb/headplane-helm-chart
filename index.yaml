@@ -21,6 +21,49 @@ entries:
         url: https://kgrubb.github.io/headplane-helm-chart/public.key
     apiVersion: v2
     appVersion: 0.7.1
+    created: "2026-10-02T00:25:25.110588875Z"
+    description: Helm chart for Headplane, the web UI for Headscale
+    digest: 3b278eab5c0dc1d0670969d90fb856286959d8994b9a9a52518d3b9b17aa327c
+    home: https://headplane.net
+    icon: https://kgrubb.github.io/headplane-helm-chart/logo.svg
+    keywords:
+    - headplane
+    - headscale
+    - tailscale
+    - vpn
+    - wireguard
+    maintainers:
+    - email: 8471701+kgrubb@users.noreply.github.com
+      name: kgrubb
+      url: https://github.com/kgrubb
+    name: headplane
+    sources:
+    - https://github.com/tale/headplane
+    - https://github.com/kgrubb/headplane-helm-chart
+    type: application
+    urls:
+    - headplane-0.0.3.tgz
+    version: 0.0.3
+  - annotations:
+      artifacthub.io/category: networking
+      artifacthub.io/containsSecurityUpdates: "false"
+      artifacthub.io/images: |
+        - name: headplane
+          image: ghcr.io/tale/headplane:0.7.1
+      artifacthub.io/license: Apache-2.0
+      artifacthub.io/links: |
+        - name: support
+          url: https://github.com/kgrubb/headplane-helm-chart/issues
+        - name: source
+          url: https://github.com/kgrubb/headplane-helm-chart
+        - name: upstream
+          url: https://github.com/tale/headplane
+      artifacthub.io/prerelease: "false"
+      artifacthub.io/signKey: |
+        fingerprint: AFB495384FDAD4EDC0EBF8FECA999A73395F45FD
+        url: https://kgrubb.github.io/headplane-helm-chart/public.key
+    apiVersion: v2
+    appVersion: 0.7.1
     created: "2026-10-02T00:25:11.337464725Z"
     description: Helm chart for Headplane, the web UI for Headscale
     digest: 23d75bdf6efc7bd6568307c48bb2cf3a00b9fa85b711dbef3b83635640aeeda5
@@ -44,4 +87,4 @@ entries:
     urls:
     - https://kgrubb.github.io/headplane-helm-chart/headplane-0.0.2.tgz
     version: 0.0.2
-generated: "2026-10-02T00:25:11.336791371Z"
+generated: "2026-10-02T00:25:25.110596435Z"
