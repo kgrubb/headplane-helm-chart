@@ -5,8 +5,7 @@
 Helm chart for [Headplane](https://headplane.net), the web UI for
 [Headscale](https://headscale.net).
 
-There is no official upstream chart yet. This chart follows the same packaging
-pattern as [nostalgiatv-helm-chart](https://github.com/kgrubb/nostalgiatv-helm-chart).
+There is no official upstream chart yet.
 
 ## Install
 
