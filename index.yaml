@@ -21,7 +21,7 @@ entries:
         url: https://kgrubb.github.io/headplane-helm-chart/public.key
     apiVersion: v2
     appVersion: 0.7.1
-    created: "2026-10-01T22:47:36.978321249Z"
+    created: "2026-10-02T00:25:11.337464725Z"
     description: Helm chart for Headplane, the web UI for Headscale
     digest: 23d75bdf6efc7bd6568307c48bb2cf3a00b9fa85b711dbef3b83635640aeeda5
     home: https://headplane.net
@@ -42,6 +42,6 @@ entries:
     - https://github.com/kgrubb/headplane-helm-chart
     type: application
     urls:
-    - headplane-0.0.2.tgz
+    - https://kgrubb.github.io/headplane-helm-chart/headplane-0.0.2.tgz
     version: 0.0.2
-generated: "2026-10-01T22:47:36.97832619Z"
+generated: "2026-10-02T00:25:11.336791371Z"
