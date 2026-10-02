@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+## [0.0.4] - 2026-10-02
+
+### Fixed
+- harden security context and probes
+
+
+
 ## [0.0.3] - 2026-10-02
 
 ### Changed
