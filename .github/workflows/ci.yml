@@ -45,7 +45,7 @@ jobs:
             --set config.oidc.enabled=true \
             --set config.oidc.issuer=https://login.example.org/application/o/headplane/ \
             --set config.oidc.clientId=headplane \
-            --set config.oidc.defaultRole=owner \
+            --set config.oidc.defaultRole=admin \
             --set headscaleConfig.existingConfigMap=headscale
           helm template test charts/headplane -f ci/values.yaml \
             --set persistence.existingClaim=my-claim \

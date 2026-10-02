@@ -69,6 +69,7 @@ config:
     clientId: "headplane"
     scope: "openid email profile"
     usePkce: true
+    # Valid: admin, auditor, it_admin, member, network_admin, viewer
     defaultRole: "member"
 
 # existingSecret keys: cookieSecret (32 chars), apiKey, clientSecret (if OIDC).
