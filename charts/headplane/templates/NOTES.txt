@@ -8,12 +8,11 @@
   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "headplane.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
   echo "Visit http://$SERVICE_IP:{{ .Values.service.port }}/admin"
 {{- else }}
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "headplane.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
-  kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME {{ .Values.service.port }}:{{ .Values.config.server.port }}
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "headplane.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
   echo "Visit http://127.0.0.1:{{ .Values.service.port }}/admin"
 {{- end }}
 
-2. Sign in with OIDC (if enabled) or paste a Headscale API key.
+2. Sign in with OIDC (if enabled) or a Headscale API key.
 
 3. Create an API key if needed:
    kubectl -n <headscale-ns> exec deploy/headscale -- headscale apikeys create --expiration 730d

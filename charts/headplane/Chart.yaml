@@ -34,6 +34,3 @@ annotations:
     - name: upstream
       url: https://github.com/tale/headplane
   artifacthub.io/prerelease: "false"
-  artifacthub.io/signKey: |
-    fingerprint: AFB495384FDAD4EDC0EBF8FECA999A73395F45FD
-    url: https://kgrubb.github.io/headplane-helm-chart/public.key

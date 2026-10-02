@@ -1,4 +1,4 @@
-# Container image. Prefer pinned tags (kube-linter blocks :latest).
+# Prefer pinned tags (kube-linter blocks :latest).
 image:
   repository: ghcr.io/tale/headplane
   # renovate: datasource=docker depName=ghcr.io/tale/headplane
@@ -28,7 +28,7 @@ service:
   externalTrafficPolicy: ""
   annotations: {}
 
-# Typically PathPrefix /admin on the same host as Headscale.
+# PathPrefix /admin on the Headscale host is the usual layout.
 ingress:
   enabled: false
   className: ""
@@ -40,7 +40,7 @@ ingress:
           pathType: Prefix
   tls: []
 
-# Headplane config.yaml (non-secret). Secret paths are fixed to the mounted secret.
+# Non-secret Headplane config. Secret paths always point at the mounted secret.
 config:
   server:
     host: "0.0.0.0"
@@ -51,10 +51,8 @@ config:
     cookieMaxAge: 86400
     dataPath: "/var/lib/headplane"
   headscale:
-    # In-cluster Headscale HTTP service.
     url: "http://headscale:8080"
     publicUrl: "https://headscale.example.org"
-    # Optional mount of Headscale's config for read-only UI display.
     configPath: "/etc/headscale/config.yaml"
   integration:
     agent:
@@ -73,19 +71,18 @@ config:
     usePkce: true
     defaultRole: "member"
 
-# Required when oidc.enabled or for server-side Headscale API access.
-# Keys: cookieSecret (32 chars), apiKey, and clientSecret when oidc.enabled.
+# existingSecret keys: cookieSecret (32 chars), apiKey, clientSecret (if OIDC).
+# Inline values are for smoke tests only and mutually exclusive with existingSecret.
 secrets:
   existingSecret: ""
   cookieSecretKey: cookieSecret
   apiKeyKey: apiKey
   clientSecretKey: clientSecret
-  # Inline values only for non-GitOps smoke tests. Mutually exclusive with existingSecret.
   cookieSecret: ""
   apiKey: ""
   clientSecret: ""
 
-# Mount Headscale config ConfigMap (optional, for config UI display).
+# Optional Headscale config ConfigMap for read-only UI display.
 headscaleConfig:
   existingConfigMap: ""
   key: config.yaml
@@ -103,16 +100,18 @@ resources: {}
 podAnnotations: {}
 podLabels: {}
 
+# Matches gcr.io/distroless/nodejs nonroot.
 podSecurityContext:
   seccompProfile:
     type: RuntimeDefault
-  fsGroup: 1000
+  fsGroup: 65532
+  fsGroupChangePolicy: OnRootMismatch
 
 containerSecurityContext:
   allowPrivilegeEscalation: false
   runAsNonRoot: true
-  runAsUser: 1000
-  runAsGroup: 1000
+  runAsUser: 65532
+  runAsGroup: 65532
   readOnlyRootFilesystem: true
   capabilities:
     drop:
@@ -126,9 +125,11 @@ nodeSelector: {}
 tolerations: []
 affinity: {}
 
+# /admin/healthz also checks Headscale. Keep liveness on /admin so Headscale
+# outages do not restart the UI pod.
 startupProbe:
   httpGet:
-    path: /admin
+    path: /admin/healthz
     port: http
   initialDelaySeconds: 5
   periodSeconds: 5
@@ -146,7 +147,7 @@ livenessProbe:
 
 readinessProbe:
   httpGet:
-    path: /admin
+    path: /admin/healthz
     port: http
   initialDelaySeconds: 5
   periodSeconds: 10

@@ -1,7 +1,7 @@
-{{- if and .Values.secrets.existingSecret (or .Values.secrets.cookieSecret .Values.secrets.apiKey .Values.secrets.clientSecret) }}
+{{- if and .Values.secrets.existingSecret (or (ne (.Values.secrets.cookieSecret | default "") "") (ne (.Values.secrets.apiKey | default "") "") (ne (.Values.secrets.clientSecret | default "") "")) }}
 {{- fail "secrets.existingSecret is mutually exclusive with inline secrets.cookieSecret/apiKey/clientSecret" }}
 {{- end }}
-{{- if and .Values.config.oidc.enabled (and (empty .Values.secrets.existingSecret) (empty .Values.secrets.clientSecret)) }}
+{{- if and .Values.config.oidc.enabled (empty .Values.secrets.existingSecret) (empty .Values.secrets.clientSecret) }}
 {{- fail "config.oidc.enabled requires secrets.existingSecret or secrets.clientSecret" }}
 {{- end }}
 {{- if and (empty .Values.secrets.existingSecret) (or (empty .Values.secrets.cookieSecret) (empty .Values.secrets.apiKey)) }}

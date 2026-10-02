@@ -1,11 +1,10 @@
 # headplane
 
+[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/headplane-helm)](https://artifacthub.io/packages/search?repo=headplane-helm)
 [![CI](https://github.com/kgrubb/headplane-helm-chart/actions/workflows/ci.yml/badge.svg)](https://github.com/kgrubb/headplane-helm-chart/actions/workflows/ci.yml)
 
 Helm chart for [Headplane](https://headplane.net), the web UI for
 [Headscale](https://headscale.net).
-
-There is no official upstream chart yet.
 
 ## Install
 
@@ -20,11 +19,9 @@ helm install headplane kgrubb-headplane/headplane -n headscale \
 
 Chart index: https://kgrubb.github.io/headplane-helm-chart/
 
-Published charts are signed with the [public key](https://kgrubb.github.io/headplane-helm-chart/public.key) on gh-pages when `GPG_PRIVATE_KEY` is configured.
-
 ## Typical reverse proxy layout
 
-Serve Headplane under `/admin` on the same host as Headscale (Tailscale-style):
+Serve Headplane under `/admin` on the same host as Headscale:
 
 ```yaml
 fullnameOverride: headplane

@@ -47,11 +47,13 @@ spec:
             - name: http
               containerPort: {{ .Values.config.server.port }}
               protocol: TCP
+          {{- with .Values.extraEnv }}
           env:
-            {{- range $k, $v := .Values.extraEnv }}
+            {{- range $k, $v := . }}
             - name: {{ $k }}
               value: {{ $v | quote }}
             {{- end }}
+          {{- end }}
           {{- with .Values.startupProbe }}
           startupProbe:
             {{- toYaml . | nindent 12 }}
