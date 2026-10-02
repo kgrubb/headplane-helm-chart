@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+## [0.0.5] - 2026-10-02
+
+### Fixed
+- verify Artifact Hub publisher and use official logo
+
+
+
 ## [0.0.4] - 2026-10-02
 
 ### Fixed
