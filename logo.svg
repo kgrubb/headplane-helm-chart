@@ -1,10 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="NostalgiaTV">
-  <rect width="64" height="64" rx="12" fill="#1a1a2e"/>
-  <rect x="10" y="14" width="44" height="30" rx="3" fill="#16213e" stroke="#e94560" stroke-width="2"/>
-  <rect x="14" y="18" width="36" height="22" rx="1" fill="#0f3460"/>
-  <circle cx="24" cy="29" r="3" fill="#e94560"/>
-  <circle cx="32" cy="29" r="3" fill="#e94560" opacity="0.7"/>
-  <circle cx="40" cy="29" r="3" fill="#e94560" opacity="0.4"/>
-  <rect x="22" y="46" width="20" height="4" rx="1" fill="#e94560"/>
-  <rect x="28" y="50" width="8" height="3" rx="1" fill="#533483"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 30 30">
+    <g transform="translate(-142.5 -229.5)">
+        <path d="M120 147.5h20a5 5 45 0 1 5 5v20a5 5 135 0 1-5 5h-20a5 5 45 0 1-5-5v-20a5 5 135 0 1 5-5" style="fill:#181717" transform="translate(27.5 82)"/>
+        <circle cx="150" cy="237" r="2.5" style="fill:#f7f5f4"/>
+        <circle cx="157.5" cy="237" r="2.5" style="fill:#444343"/>
+        <circle cx="165" cy="237" r="2.5" style="fill:#f7f5f4"/>
+        <circle cx="150" cy="244.5" r="2.5" style="fill:#f7f5f4"/>
+        <circle cx="157.5" cy="244.5" r="2.5" style="fill:#f7f5f4"/>
+        <circle cx="165" cy="244.5" r="2.5" style="fill:#f7f5f4"/>
+        <circle cx="150" cy="252" r="2.5" style="fill:#f7f5f4"/>
+        <circle cx="157.5" cy="252" r="2.5" style="fill:#444343"/>
+        <circle cx="165" cy="252" r="2.5" style="fill:#f7f5f4"/>
+    </g>
 </svg>
