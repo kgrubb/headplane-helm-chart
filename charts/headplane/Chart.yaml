@@ -2,7 +2,7 @@ apiVersion: v2
 name: headplane
 description: Helm chart for Headplane, the web UI for Headscale
 type: application
-version: 0.0.5
+version: 0.0.6
 appVersion: "0.7.1"
 home: https://headplane.net
 icon: https://kgrubb.github.io/headplane-helm-chart/logo.svg

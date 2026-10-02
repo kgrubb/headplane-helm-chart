@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+## [0.0.6] - 2026-10-02
+
+### Fixed
+- always set kubernetes.pod_name in config
+
+
+
 ## [0.0.5] - 2026-10-02
 
 ### Fixed
