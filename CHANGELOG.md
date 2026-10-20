@@ -2,6 +2,17 @@
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-10-20
+
+### Added
+- auto-bump chart on new Headplane releases ([#1](https://github.com/kgrubb/headplane-helm-chart/pull/1))
+  - add daily `upgrade-headplane` workflow + script (same pattern as stalwart/nostalgiatv) so new `tale/headplane` releases bump `appVersion` / image tag and dispatch `release.yml`
+  - map upstream major → `feat!(image)`, minor → `feat(image)`, patch → `fix(image)` so chart semver follows
+  - note automatic upstream sync in the README
+- auto-bump chart on new Headplane releases
+
+
+
 ## [0.0.6] - 2026-10-02
 
 ### Fixed
