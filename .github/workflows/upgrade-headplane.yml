@@ -1,0 +1,42 @@
+name: Upgrade Headplane
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin main
+
+      - name: Upgrade Headplane
+        id: upgrade
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          chmod +x scripts/upgrade-headplane.sh
+          ./scripts/upgrade-headplane.sh
+
+      - name: Commit and push
+        if: steps.upgrade.outputs.upgraded == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SUBJECT: ${{ steps.upgrade.outputs.commit_subject }}
+        run: |
+          git add charts/headplane/Chart.yaml charts/headplane/values.yaml
+          git commit -m "${SUBJECT}"
+          git pull --rebase origin main
+          git push
+          gh workflow run release.yml --ref main

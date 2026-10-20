@@ -63,6 +63,10 @@ persistence:
 `secrets.existingSecret` must provide `cookieSecret` (32 chars), `apiKey`
 (`headscale apikeys create`), and `clientSecret` when OIDC is enabled.
 
+## Releases
+
+Pushes to `main` that change `charts/` bump the chart version from conventional commits (`feat:` minor, breaking major, otherwise patch), publish with [chart-releaser](https://github.com/helm/chart-releaser-action), and host `index.yaml` plus packages on `gh-pages`. [Headplane releases](https://github.com/tale/headplane/releases) are synced automatically.
+
 ## Development
 
 ```bash
