@@ -3,7 +3,7 @@ name: headplane
 description: Helm chart for Headplane, the web UI for Headscale
 type: application
 version: 0.1.0
-appVersion: "0.7.1"
+appVersion: "0.8.1"
 home: https://headplane.net
 icon: https://kgrubb.github.io/headplane-helm-chart/logo.svg
 sources:
@@ -25,7 +25,7 @@ annotations:
   artifacthub.io/license: Apache-2.0
   artifacthub.io/images: |
     - name: headplane
-      image: ghcr.io/tale/headplane:0.7.1
+      image: ghcr.io/tale/headplane:0.8.1
   artifacthub.io/links: |
     - name: support
       url: https://github.com/kgrubb/headplane-helm-chart/issues
