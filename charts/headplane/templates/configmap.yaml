@@ -33,6 +33,9 @@ data:
     integration:
       agent:
         enabled: {{ .Values.config.integration.agent.enabled }}
+        {{- if hasKey .Values.config.integration.agent "tailscaleNetns" }}
+        tailscale_netns: {{ .Values.config.integration.agent.tailscaleNetns }}
+        {{- end }}
       docker:
         enabled: {{ .Values.config.integration.docker.enabled }}
       kubernetes:

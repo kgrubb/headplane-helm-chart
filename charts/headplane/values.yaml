@@ -57,6 +57,8 @@ config:
   integration:
     agent:
       enabled: false
+      # Optional. false = OS routing for Headscale (see headplane agent docs).
+      # tailscaleNetns: false
     docker:
       enabled: false
     kubernetes:
