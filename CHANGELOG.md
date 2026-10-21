@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-21
+
+### Added
+- optional `config.integration.agent.tailscaleNetns` passthrough into Headplane config ([#2](https://github.com/kgrubb/headplane-helm-chart/pull/2))
+
+
+
 ## [0.2.0] - 2026-10-20
 
 ### Added
