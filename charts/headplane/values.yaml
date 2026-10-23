@@ -2,7 +2,7 @@
 image:
   repository: ghcr.io/tale/headplane
   # renovate: datasource=docker depName=ghcr.io/tale/headplane
-  tag: "0.8.1"
+  tag: "0.8.2"
   digest: ""
   pullPolicy: IfNotPresent
 
