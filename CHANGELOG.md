@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-10-23
+
+### Fixed
+- bump Headplane app image to 0.8.2
+
+
+
 ## [0.3.0] - 2026-10-21
 
 ### Added
